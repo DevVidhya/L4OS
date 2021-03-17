@@ -1,0 +1,53 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main()
+{
+	int p,r;
+	cout<<"No of processes: ";
+	cin>>p;
+	cout<<"No of resources: ";
+	cin>>r;
+	int allocate[p][r], max[p][r];
+	int available[r];
+	cout<<"Maximum requirememnts of each process: \n";
+	for(int i = 0; i < p; i++)
+		for(int j = 0; j < r; j++)
+			cin>>max[i][j];
+	cout<<"Present allocation of each process: \n";
+	for(int i=0;i<p;i++)
+		for(int j=0;j<r;j++)
+			cin>>allocate[i][j]; 
+	cout<<"Available resources: \n";
+	for(int i=0;i<r;i++)
+		cin>>available[i];
+	vector<int>done;
+	while(done.size()<p)
+	{
+		for(int i=0;i<p;i++)
+		{	
+			int f=0;
+			for(int j=0;j<r;j++)
+			{
+				if(available[j]+allocate[i][j]>=max[i][j])
+					f+=1;
+			}
+			if(f==3)
+			{
+				for(int j=0;j<r;j++)
+				{
+					max[i][j]=INT_MAX;
+					available[j]+=allocate[i][j];
+				}
+				cout<<"Process "<<i<<" has been completed\n";
+				done.push_back(i);
+			}
+		}
+		if(done.size()==0)
+		{
+			cout<<"Unsafe\n";
+			exit(0);
+		}
+	}
+	return 0;
+}
+

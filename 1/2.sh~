@@ -1,0 +1,42 @@
+#!/bin/bash
+	echo "1.Add"
+	echo "2.Subtract"
+	echo "3.Multiply"
+	echo "4.Divide";
+	echo "5.Length";
+	echo "6.Compare";
+	echo "7.Concatenate";
+	echo "Choice";
+	read n;
+
+	echo "Input";
+
+	case $n in
+		1) read a b
+			echo "Sum: $((a+b))\n"   
+		;;
+		2) read a b
+			echo "Difference: $((a-b))\n" 
+		;;
+		3) read a b
+			echo "Product: $((a*b))\n" 
+		;;
+		4) read a b
+			echo "Division: $((a/b))\n" 
+		;;
+		5) read a
+			l=${#a}
+			printf "Length: %d\n" $l
+		;;
+		6) read a b
+			if [[ "$a" == *$b* ]]; then
+				echo "Same\n"
+			else
+				echo "Different\n"
+			fi
+		;;
+		7) read a b
+			echo "Concatenated string: $a$b"
+		;;
+		*) echo "Enter correct choice";
+	esac

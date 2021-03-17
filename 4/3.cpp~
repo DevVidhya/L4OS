@@ -1,0 +1,73 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define tp 5
+struct process
+{
+	int at,bt,pr,pno;
+};
+process p[50];
+bool comp(process a, process b)
+{
+	if(a.at == b.at)
+		return(a.pr<b.pr);
+	else
+		return(a.at<b.at);
+}
+void WT(int wt[])
+{
+	int s[50];
+	s[0]=0;
+	wt[0]=0;
+	for(int i=1;i<tp;i++)
+	{
+		s[i]=p[i-1].bt+s[i-1];
+		wt[i]=s[i]-p[i].at+1;
+		if(wt[i]<0)
+			wt[i]=0;
+	}
+}
+void TAT(int tat[],int wt[])
+{
+	for(int i=0;i<tp;i++)
+		tat[i]=p[i].bt+wt[i];
+}
+void GC()
+{
+	int wt[50],tat[50];
+	double wavg=0,tavg=0;
+	WT(wt);
+	TAT(tat,wt);
+	int st[50],ct[50];
+	st[0]=1;
+	ct[0]=st[0]+tat[0];
+	for(int i=0;i<tp;i++)
+	{
+		st[i]=ct[i-1];
+		ct[i]=st[i]+tat[i]-wt[i];
+	}
+	cout<<"Processes  Priority  Arrival Time  Burst Time  Start Time  Finish Time  Turn-Around Time  Waiting Time \n";
+	for(int i=0;i<tp;i++)
+	{
+		wavg+=wt[i];
+		tavg+=tat[i];
+		cout<<" "<<p[i].pno<<"\t\t"<<p[i].pr<<"\t"<<p[i].at<<"\t\t"<<p[i].bt<<"\t"<<st[i]<<"\t\t"<<ct[i]<<"\t\t"<<tat[i]<<"\t\t"<<wt[i]<<endl;
+	}
+	cout<<"Average Waiting Time: "<<wavg/(float)tp<<endl;
+	cout<<"Average Turn-Around Time: "<<tavg/(float)tp<<endl;
+}
+int main()
+{
+	int at[]={0,1,3,2,4};
+	int bt[]={3,6,1,2,4};
+	int pr[]={3,4,9,7,8};
+	for(int i=0;i<tp;i++)
+	{
+		p[i].at=at[i];
+		p[i].bt=bt[i];
+		p[i].pr=pr[i];
+		p[i].pno=i+1;
+	}
+	sort(p,p+tp,comp);
+	GC();
+	return 0;
+}

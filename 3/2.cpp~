@@ -1,0 +1,58 @@
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+void *runner(void *param); 
+
+int main(int argc, char *argv[]) {
+
+  
+   if(argc < 2) {
+      fprintf(stderr, "USAGE: ./prime.out <Integer value>\n");
+      exit(1);
+   }
+
+   
+   if(atoi(argv[1]) < 2) {
+      fprintf(stderr, "USAGE: %d must be >= 2\n", atoi(argv[1]));
+      exit(1);
+   }
+
+   pthread_t tid;       
+   pthread_attr_t attr; 
+
+   
+   pthread_attr_init(&attr);
+  
+   pthread_create(&tid,&attr,runner,argv[1]);
+  
+   pthread_join(tid,NULL);
+   printf("\nComplete\n");
+}
+
+
+void *runner(void *param) {
+   int i,j,upper = atoi(param);
+   
+   int trap = 0;
+      for(j = 2; j < upper; j++)
+ {
+         int result = upper % j;
+       
+         if(result == 0)
+         {
+            trap = 1;
+            printf("%d not a prime no",upper);
+            break;
+         }
+}
+     
+      if(trap == 0)
+ {
+         printf("%d ", upper);
+         printf("is a prime no");
+      }
+   
+   //Exit the thread
+   pthread_exit(0);
+}

@@ -1,0 +1,107 @@
+#include <iostream>
+#ifndef _QUICKSORT_H
+#define _QUICKSORT_H
+
+class QuickSortThread : public Thread
+{
+     public:
+          QuickSortThread(int Lowerbound, int Upperbound, int Array[]); 
+
+     private:
+          void ThreadFunc();  // thread body
+          int  lowerbound;    // lower bound of the sub-array to be sorted
+          int  upperbound;    // upper bound of the sub-array to be sorted
+          int  *a;            // pointing to array to be sorted
+};
+
+#endif
+
+QuickSortThread::QuickSortThread(int Lowerbound, int Upperbound, int Array[]) 
+                :lowerbound(Lowerbound), upperbound(Upperbound), a(Array)
+{
+     ThreadName.seekp(0, ios::beg);
+     ThreadName << "Sorting" 
+                << '(' << Lowerbound << ':' << Upperbound << ')'
+                << '\0';
+}
+
+
+void QuickSortThread::ThreadFunc()
+{
+     Thread::ThreadFunc();
+     int pivot = a[upperbound];         // pick up pivot value
+     int left = lowerbound - 1,         // scan index from left side
+         right = upperbound,            // scan index from right side
+         tmp, pivotIndex;
+     QuickSortThread  *leftSortThread,  // recursive sorting threads
+                     *rightSortThread;
+
+
+     if (lowerbound >= upperbound)
+          Exit();                       //return and recursion ends
+
+     while (left < right) {             // partition loop
+          do { left++;} while (a[left] < pivot);
+          do { right--;} while (a[right] > pivot);
+          if (left < right ) {          
+               tmp = a[left];
+               a[left] = a[right];
+               a[right] = tmp;
+          }
+     }
+
+     pivotIndex = left;                 // put the  pivot back
+     tmp = a[pivotIndex];
+     a[pivotIndex] = pivot;
+     a[upperbound] = tmp;
+
+     // start the "recursive threads"
+     leftSortThread = new QuickSortThread(lowerbound, pivotIndex - 1, a);
+     leftSortThread->Begin();
+     rightSortThread = new QuickSortThread(pivotIndex + 1, upperbound, a);
+     rightSortThread->Begin();
+
+     leftSortThread->Join();            // wait for the child threads
+     rightSortThread->Join();
+     
+     Exit();                            // done and exit
+}
+
+int main(int argc, char *argv[])
+{
+     QuickSortThread *quicksortthread;
+     int *array;
+     int arraySize,          // number of elements in the array to be sorted
+         i;
+
+     // get the array from user 
+     cout << "Please input array size:" << endl;
+     cin >> arraySize;
+
+     array = new int[arraySize]; // create the array
+
+     cout << "Please input the array elements: " << endl;
+     for (i = 0; i < arraySize; i++)
+          cin >> array[i]; 
+
+     cout << "Before quicksort, the array is:" << endl;
+     for (i = 0; i < arraySize; i++)
+          cout << array[i] << "   ";
+     cout << endl;
+
+     // start the quicksort thread
+     quicksortthread = new QuickSortThread(0, arraySize - 1, array);
+     quicksortthread->Begin();
+
+     // wait for the quicksort thread to finish
+     quicksortthread->Join();
+
+     cout << "After quicksort, the array is:" << endl;
+     for (i = 0; i < arraySize; i++)
+          cout << array[i] << "   "; 
+     cout << endl;
+     
+     Exit();
+     
+     return 0; 
+}

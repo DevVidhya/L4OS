@@ -1,0 +1,20 @@
+#!/bin/bash
+	echo "Menu"
+	echo "  Show Todays date/time"
+	echo "  Show files in current directory"
+	echo "  Show calendar"
+	echo "  Start editor to write";
+	echo "  Choice";
+	read n
+
+	case $n in
+		1) date;
+	;;
+	2) ls;
+	;;
+	3) cal;
+	;;
+	4) gedit;
+	;;
+	*) echo "Enter correct choice";
+esac
