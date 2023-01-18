@@ -1,2 +1,2 @@
-# Sem4OS
-practice codes of sem 4 os lab
+# Operating Systems 
+Memory Allocation Techniques (fcfs, best-fit, etc.) and Multi-threaded programs Implementation
